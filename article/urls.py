@@ -16,5 +16,4 @@ urlpatterns = [
     path('article_safe_delete/<int:id>/',views.article_safe_delete,name='article_safe_delete'),
     # 更新文章
     path('article_update/<int:id>/', views.article_update, name='article_update'),
-    
 ]

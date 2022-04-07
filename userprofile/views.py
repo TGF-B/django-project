@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from django.http import HttpResponse
 from .forms import UserLoginForm,UserRegisterForm
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .forms import ProfileForm
+from .models import Profile
 # Create your views here.
-def user_login(request):
+def user_login(request): 
     if request.method == 'POST':
         user_login_form = UserLoginForm(data=request.POST)
         if user_login_form.is_valid():
@@ -52,5 +55,50 @@ def user_register(request):
         else:
             return HttpResponse("注册表单输入有误。请重新输入~")
 
+    else:
+        return HttpResponse("请使用GET或POST请求数据")
+
+@login_required(login_url='/userprofile/user_login/')
+def user_delete(request, id):
+    if request.method == 'POST':
+        user = User.objects.get(id=id)
+        # 验证登录用户、待删除用户是否相同
+        if request.user == user:
+            #退出登录，删除数据并返回博客列表
+            logout(request)
+            user.delete()
+            return redirect("article:article_list")
+        else:
+            return HttpResponse("你没有删除操作的权限。")
+    else:
+        return HttpResponse("仅接受post请求。")
+
+@login_required(login_url='/userfile/user_login')
+def profile_edit(request,id):
+    user = User.objects.get(id=id)
+    #profile=Profile.objects.get(user_id=id)#
+    if Profile.objects.filter(user_id=id).exists():
+        profile=Profile.objects.get(user_id=id)
+    else:
+        profile = Profile.objects.create(user=user)
+    if request.method=='POST':
+        if request.user!=user:
+            return HttpResponse("你没有权限修改此用户的信息")
+        profile_form=ProfileForm(request.POST,request.FILES) 
+        if profile_form.is_valid():
+            profile_cd=profile_form.cleaned_data
+            profile.phone=profile_cd['phone']
+            profile.bio=profile_cd['bio']
+            profile.save()
+            return redirect("userprofile:profile_edit",id=id)
+        if 'avatar' in request.FILES:
+            profile.avtar=profile_cd['avatar']
+        else:
+            return HttpResponse("注册表单输入有误。请重新输入")
+        
+    elif request.method == 'GET':
+        profile_form = ProfileForm()
+        context={"profile_form":profile_form,'profile':profile}
+        return render(request,'userprofile/edit.html')
     else:
         return HttpResponse("请使用GET或POST请求数据")

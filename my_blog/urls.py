@@ -16,12 +16,17 @@ Including another URLconf
 from django.contrib import admin
 # 记得引入include
 from django.urls import path, include
-
+from django.conf import settings
+from django.conf.urls.static import static
 # 存放映射关系的列表
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 新增代码，配置app的url
     path('article/', include(('article.urls'),namespace='article')),
     # 用户管理
-    path('userprofile/', include(('userprofile.urls'), namespace='userprofile'))
+    path('userprofile/', include(('userprofile.urls'), namespace='userprofile')),
+    path('password_reset/', include('password_reset.urls'))
+    
 ]
+#专门为图片上传提供的路径
+urlpatterns+=static(settings.MEDIA_URL,document_root= settings.MEDIA_ROOT)
