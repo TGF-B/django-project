@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '#&3%c!u3(antf8ml!k%yh-&#u#4m&%#3r6ypg2*oa3yk#a%b!i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 # SMTP服务器，改为你的邮箱的smtp!
 EMAIL_HOST = 'smtp-mail.outlook.com'
 # 改为你自己的邮箱名！
