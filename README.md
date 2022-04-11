@@ -18,5 +18,8 @@
 >部署就是把个人电脑上的作品发布到公共领域，给更多人访问，即把一个项目从客户端储存到服务器，以便其他客户端在请求这个项目时可以由服务端直接发给他。众所周知，能够支持成百万甚至上亿人访问的服务器必定非常昂贵，所以这个基础设施的建设交给了众多互联网大厂，常见的有阿里云，谷歌云，亚马逊云（AWS）等。**建立本机电脑与云服务器的连接并将项目上传**，这个连接的桥叫做**安全终端模拟软件**,可以理解为古早时期的电话接线员，常见就有Xshell。
 >> Xshell怎么使用？    
 >Xshell作为SSH远程服务工具，用来沟通你的电脑和服务器。这个XShell的使用里有巨大的坑，如果事先不知道，会浪费很久的时间。    
->首先明确**你的本机Linux系统本身是默认关闭SSH服务的！！** 所以你需要先把打开。
->具体步骤为：sudo apt-get update更新所有安装工具的配置-->sudo apt-get remove openssh-server卸载原有的可能有问题的SSH模块-->sudo apt-get install openssh-server 重装SSH模块-->sudo vim /etc/ssh/sshd_config 进入ssh模块配置-->找到PermitRootLogin，把状态改写成Yes，即允许远程登陆-->sudo /etc/init.d/ssh restart重启SSH服务
+>首先明确**你的本机Linux系统本身是默认关闭SSH服务的！！** 所以你需要先把它打开。
+>打开具体步骤为：sudo apt-get update更新所有安装工具的配置-->sudo apt-get remove openssh-server卸载原有的可能有问题的SSH模块-->sudo apt-get install openssh-server 重装SSH模块-->sudo vim /etc/ssh/sshd_config 进入ssh模块配置-->找到PermitRootLogin，把状态改写成Yes，即允许远程登陆-->sudo /etc/init.d/ssh restart重启SSH服务
+>**将本地linux与远程服务器连接**：创建一个与你远程服务器（云服务器）沟通的窗口，里面填入云服务器的公网IP和自己创建的用户密码然后连接。出现“欢迎”字样后，意味着这个Xshell的窗口已经接管你本机Linux系统，此时你只需在Xshell的窗口操作命令
+>两个缓存服务器，Nginx和Gunicorn：nginx是负责初步接收客户端请求的**web服务器**，如果把云服务器当成人们索取食物的大海，那么web服务器的作用相当于一个小湖，简单的静态资源请求（主要指html，css）它可以自己响应，稍复杂的动态资源（代码逻辑跳转）请求则需要转发给**UWSGI类型的服务器**，常见的就是**Gunicorn**。
+>启动
